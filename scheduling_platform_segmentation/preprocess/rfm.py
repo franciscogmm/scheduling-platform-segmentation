@@ -67,26 +67,32 @@ def generate_conditions(pdf, dict_quantile, metric, reverse=0):
 
     return conditions, values
 
-def generate_trad_rf_segments(pdf, weighted=0):
+def generate_trad_rf_segments(pdf, log=0, weighted=0):
     """tag each user with traditional RF segments based on RWFM data
 
     """
     pdf_copy = deepcopy(pdf)
-    if weighted == 0:
-        recency = 'r'
+    if log == 0:
+        sfx = '_log'
     else:
-        recency = 'w'
+        sfx = ''
+
+    if weighted == 0:
+        recency = f'r{sfx}'
+    else:
+        recency = f'w{sfx}'
+
     conditions = [
-        (pdf_copy[recency] >= 1) & (pdf_copy[recency] <= 2) & (pdf_copy['f'] >= 1) & (pdf_copy['f'] <= 2), # hibernating
-        (pdf_copy[recency] >= 1) & (pdf_copy[recency] <= 2) & (pdf_copy['f'] >= 3) & (pdf_copy['f'] <= 4), # at_risk
-        (pdf_copy[recency] >= 1) & (pdf_copy[recency] <= 2) & (pdf_copy['f'] == 5), # cant_lose
-        (pdf_copy[recency] == 3) & (pdf_copy['f'] >= 1) & (pdf_copy['f'] <= 2), # about_to_sleep
-        (pdf_copy[recency] == 3) & (pdf_copy['f'] == 3), # need_attention
-        (pdf_copy[recency] >= 3) & (pdf_copy[recency] <= 4) & (pdf_copy['f'] >= 4) & (pdf_copy['f'] <= 5), # loyal_customers
-        (pdf_copy[recency] == 4) & (pdf_copy['f'] == 1), # promising
-        (pdf_copy[recency] == 5) & (pdf_copy['f'] == 1), # new_customers
-        (pdf_copy[recency] >= 4) & (pdf_copy[recency] <= 5) & (pdf_copy['f'] >= 2) & (pdf_copy['f'] <= 3), # potential_loyalists
-        (pdf_copy[recency] == 5) & (pdf_copy['f'] >= 4) & (pdf_copy['f'] <= 5), # champions
+        (pdf_copy[recency] >= 1) & (pdf_copy[recency] <= 2) & (pdf_copy[f'f{sfx}'] >= 1) & (pdf_copy[f'f{sfx}'] <= 2), # hibernating
+        (pdf_copy[recency] >= 1) & (pdf_copy[recency] <= 2) & (pdf_copy[f'f{sfx}'] >= 3) & (pdf_copy[f'f{sfx}'] <= 4), # at_risk
+        (pdf_copy[recency] >= 1) & (pdf_copy[recency] <= 2) & (pdf_copy[f'f{sfx}'] == 5), # cant_lose
+        (pdf_copy[recency] == 3) & (pdf_copy[f'f{sfx}'] >= 1) & (pdf_copy[f'f{sfx}'] <= 2), # about_to_sleep
+        (pdf_copy[recency] == 3) & (pdf_copy[f'f{sfx}'] == 3), # need_attention
+        (pdf_copy[recency] >= 3) & (pdf_copy[recency] <= 4) & (pdf_copy[f'f{sfx}'] >= 4) & (pdf_copy[f'f{sfx}'] <= 5), # loyal_customers
+        (pdf_copy[recency] == 4) & (pdf_copy[f'f{sfx}'] == 1), # promising
+        (pdf_copy[recency] == 5) & (pdf_copy[f'f{sfx}'] == 1), # new_customers
+        (pdf_copy[recency] >= 4) & (pdf_copy[recency] <= 5) & (pdf_copy[f'f{sfx}'] >= 2) & (pdf_copy[f'f{sfx}'] <= 3), # potential_loyalists
+        (pdf_copy[recency] == 5) & (pdf_copy[f'f{sfx}'] >= 4) & (pdf_copy[f'f{sfx}'] <= 5), # champions
     ]
 
     values = TRAD_RF_SEGMENTS_LIST
