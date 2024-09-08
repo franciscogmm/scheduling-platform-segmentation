@@ -67,6 +67,7 @@ def generate_trad_rf_segments(pdf):
         values = TRAD_RF_SEGMENTS_LIST
         pdf_copy['wtd_rfm'] = np.select(conditions, values)
         pdf_final = pd.concat([pdf_final, pdf_copy])
+    pdf_final['frequency'] = pdf_final['frequency'].astype(int)
 
 
     return pdf_final
